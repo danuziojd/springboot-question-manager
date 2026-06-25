@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"></head>
+<body>
+<div th:replace="fragments/menu :: menu"></div>
+
+<div class="container mt-4">
+    <h1 class="mb-4">Tematicas</h1>
+
+    <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <a th:href="@{/tematicas/nueva}" class="btn btn-primary mb-3">+ Nueva Tematica</a>
+
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="tematica : ${tematicas}">
+                <td th:text="${tematica.id}"></td>
+                <td th:text="${tematica.nombre}"></td>
+                <td>
+                    <a th:href="@{/tematicas/editar/{id}(id=${tematica.id})}" class="btn btn-sm btn-warning">Editar</a>
+                    <a th:href="@{/tematicas/eliminar/{id}(id=${tematica.id})}" class="btn btn-sm btn-danger"
+                       onclick="return confirm('?Seguro que deseas eliminar esta tematica?')">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <nav th:if="${pagina.totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/tematicas(page=0)}">&laquo;</a>
+            </li>
+            <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/tematicas(page=${pagina.number - 1})}">&lsaquo;</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}"
+                th:classappend="${i == pagina.number} ? 'active'">
+                <a class="page-link" th:href="@{/tematicas(page=${i})}" th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/tematicas(page=${pagina.number + 1})}">&rsaquo;</a>
+            </li>
+            <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/tematicas(page=${pagina.totalPages - 1})}">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
