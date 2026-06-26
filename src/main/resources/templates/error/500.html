@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="fragments/header :: header"></head>
+	<body>
+		<div th:replace="fragments/menu :: menu"></div>
+		<div class="container mt-4 text-center">
+	   		<h1 class="display-4">500 - Error interno</h1>
+	    	<p class="lead" th:text="${mensaje}">Se ha producido un error interno en el servidor.</p>
+	    	<a th:href="@{/}" class="btn btn-primary mt-3">Volver al inicio</a>
+		</div>
+		<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+	</body>
+</html>

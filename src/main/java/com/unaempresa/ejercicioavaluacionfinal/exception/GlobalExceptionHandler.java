@@ -14,6 +14,12 @@ public class GlobalExceptionHandler {
 		return "error/404";
 	}
 	
+	@ExceptionHandler(TematicaNoEncontradaException.class)
+	public String manejarTematicaNoEncontrada(TematicaNoEncontradaException ex, Model model) {
+		model.addAttribute("mensaje", ex.getMessage());
+		return "error/404";
+	}
+	
 	@ExceptionHandler(NoHandlerFoundException.class)
 	public String manejarNoHandlerFound(NoHandlerFoundException ex, Model model) {
 		model.addAttribute("mensaje", "La página que buscas no existe.");

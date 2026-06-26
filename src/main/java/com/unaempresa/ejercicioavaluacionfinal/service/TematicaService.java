@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unaempresa.ejercicioavaluacionfinal.entity.Tematica;
+import com.unaempresa.ejercicioavaluacionfinal.exception.TematicaNoEncontradaException;
 import com.unaempresa.ejercicioavaluacionfinal.repository.TematicaRepository;
 
 @Service
@@ -28,7 +29,7 @@ public class TematicaService {
 
     public Tematica obtenerPorId(Long id) {
         return tematicaRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Tematica no encontrada: " + id));
+            .orElseThrow(() -> new TematicaNoEncontradaException("Tematica no encontrada: " + id));
     }
 
     @Transactional
@@ -39,7 +40,7 @@ public class TematicaService {
     @Transactional
     public void eliminar(Long id) {
         if (!tematicaRepository.existsById(id)) {
-            throw new RuntimeException("Tematica no encontrada: " + id);
+            throw new TematicaNoEncontradaException("Tematica no encontrada: " + id);
         }
         tematicaRepository.deleteById(id);
     }
