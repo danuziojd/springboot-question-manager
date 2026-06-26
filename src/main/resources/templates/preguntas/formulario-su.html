@@ -1,72 +1,85 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header"></head>
+<head th:replace="fragments/header :: header">
+</head>
 <body>
-
 <div th:replace="fragments/menu :: menu"></div>
 
-<div class="container mt-4">
+<div class="container main-content">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h2 class="mb-4" th:if="${pregunta.id == null}">Nueva Pregunta de Selección Única</h2>
+            <h2 class="mb-4" th:if="${pregunta.id != null}">Editar Pregunta de Selección Única</h2>
 
-    <h2 class="mb-4" th:if="${pregunta.id == null}">Nueva Pregunta de Selección Única</h2>
-    <h2 class="mb-4" th:if="${pregunta.id != null}">Editar Pregunta de Selección Única</h2>
+            <form th:action="@{/preguntas/guardar}" th:object="${pregunta}" method="post" class="card shadow-sm">
+                <div class="card-body">
+                    <input type="hidden" th:field="*{id}">
+                    <input type="hidden" name="tipo" value="SU">
 
-    <form th:action="@{/preguntas/guardar}" th:object="${pregunta}" method="post" class="card card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Enunciado</label>
+                        <textarea class="form-control" th:field="*{enunciado}" rows="3"
+                                  th:classappend="${#fields.hasErrors('enunciado')} ? 'is-invalid'"></textarea>
+                        <div class="invalid-feedback" th:each="err : ${#fields.errors('enunciado')}" th:text="${err}"></div>
+                    </div>
 
-        <input type="hidden" th:field="*{id}">
-        <input type="hidden" name="tipo" value="SU">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Dificultad (1-5)</label>
+                            <select class="form-select" th:field="*{dificultad}"
+                                    th:classappend="${#fields.hasErrors('dificultad')} ? 'is-invalid'">
+                                <option value="">Seleccionar...</option>
+                                <option value="1">1 - Muy fácil</option>
+                                <option value="2">2 - Fácil</option>
+                                <option value="3">3 - Media</option>
+                                <option value="4">4 - Difícil</option>
+                                <option value="5">5 - Muy difícil</option>
+                            </select>
+                            <div class="invalid-feedback" th:each="err : ${#fields.errors('dificultad')}" th:text="${err}"></div>
+                        </div>
 
-        <div class="mb-3">
-            <label class="form-label">Enunciado</label>
-            <textarea class="form-control" th:field="*{enunciado}" rows="3"
-                      th:classappend="${#fields.hasErrors('enunciado')} ? 'is-invalid'"></textarea>
-            <div class="invalid-feedback" th:each="err : ${#fields.errors('enunciado')}" th:text="${err}"></div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Temática</label>
+                            <select class="form-select" th:field="*{tematica}"
+                                    th:classappend="${#fields.hasErrors('tematica')} ? 'is-invalid'">
+                                <option value="">Seleccionar...</option>
+                                <option th:each="t : ${tematicas}" th:value="${t.id}" th:text="${t.nombre}"></option>
+                            </select>
+                            <div class="invalid-feedback" th:each="err : ${#fields.errors('tematica')}" th:text="${err}"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Opciones (separadas por coma)</label>
+                        <input type="text" class="form-control" th:field="*{opciones}" placeholder="Ej: A,B,C,D"
+                               th:classappend="${#fields.hasErrors('opciones')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:each="err : ${#fields.errors('opciones')}" th:text="${err}"></div>
+                        <div class="form-text">Escribe las opciones separadas por comas.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Respuesta Correcta</label>
+                        <input type="text" class="form-control" th:field="*{respuestaCorrecta}" placeholder="Ej: A"
+                               th:classappend="${#fields.hasErrors('respuestaCorrecta')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:each="err : ${#fields.errors('respuestaCorrecta')}" th:text="${err}"></div>
+                        <div class="form-text">Indica cuál de las opciones es la correcta.</div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary px-4">Guardar</button>
+                        <a th:href="@{/preguntas}" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <div class="mb-3">
-            <label class="form-label">Dificultad (1-5)</label>
-            <select class="form-select" th:field="*{dificultad}"
-                    th:classappend="${#fields.hasErrors('dificultad')} ? 'is-invalid'">
-                <option value="">Seleccionar...</option>
-                <option value="1">1 - Muy fácil</option>
-                <option value="2">2 - Fácil</option>
-                <option value="3">3 - Media</option>
-                <option value="4">4 - Difícil</option>
-                <option value="5">5 - Muy difícil</option>
-            </select>
-            <div class="invalid-feedback" th:each="err : ${#fields.errors('dificultad')}" th:text="${err}"></div>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Temática</label>
-            <select class="form-select" th:field="*{tematica}"
-                    th:classappend="${#fields.hasErrors('tematica')} ? 'is-invalid'">
-                <option value="">Seleccionar...</option>
-                <option th:each="t : ${tematicas}" th:value="${t.id}" th:text="${t.nombre}"></option>
-            </select>
-            <div class="invalid-feedback" th:each="err : ${#fields.errors('tematica')}" th:text="${err}"></div>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Opciones (separadas por coma)</label>
-            <input type="text" class="form-control" th:field="*{opciones}" placeholder="Ej: A,B,C,D"
-                   th:classappend="${#fields.hasErrors('opciones')} ? 'is-invalid'">
-            <div class="invalid-feedback" th:each="err : ${#fields.errors('opciones')}" th:text="${err}"></div>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Respuesta Correcta</label>
-            <input type="text" class="form-control" th:field="*{respuestaCorrecta}" placeholder="Ej: A"
-                   th:classappend="${#fields.hasErrors('respuestaCorrecta')} ? 'is-invalid'">
-            <div class="invalid-feedback" th:each="err : ${#fields.errors('respuestaCorrecta')}" th:text="${err}"></div>
-        </div>
-
-        <div class="d-flex gap-2">
-            <button class="btn btn-primary">Guardar</button>
-            <a th:href="@{/preguntas}" class="btn btn-secondary">Cancelar</a>
-        </div>
-
-    </form>
+    </div>
 </div>
+
+<footer class="footer mt-auto py-3 bg-light border-top">
+    <div class="container text-center text-muted small">
+        &copy; 2025 - Gestor de Preguntas
+    </div>
+</footer>
 
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>

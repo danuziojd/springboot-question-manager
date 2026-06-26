@@ -1,13 +1,34 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header"></head>
+<head th:replace="fragments/header :: header">
+</head>
 <body>
 <div th:replace="fragments/menu :: menu"></div>
 
-<div class="container mt-4">
-    <h1>Gestor de Preguntas</h1>
-    <p>Bienvenido al sistema de gestión de preguntas de evaluación.</p>
+<div class="container main-content">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <div class="hero-section">
+                <h1 class="display-5 fw-bold text-primary mb-3">Gestor de Preguntas</h1>
+                <p class="lead text-muted mb-4">Bienvenido al sistema de gestión de preguntas de evaluación.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a th:href="@{/preguntas}" class="btn btn-primary btn-lg px-4">
+                        Gestionar Preguntas
+                    </a>
+                    <a th:href="@{/tematicas}" class="btn btn-outline-primary btn-lg px-4">
+                        Gestionar Temáticas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<footer class="footer mt-auto py-3 bg-light border-top">
+    <div class="container text-center text-muted small">
+        &copy; 2025 - Gestor de Preguntas
+    </div>
+</footer>
 
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>

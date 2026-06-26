@@ -1,14 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header"></head>
+<head th:replace="fragments/header :: header">
+</head>
 <body>
 <div th:replace="fragments/menu :: menu"></div>
 
-<div class="container mt-4 text-center">
-    <h1 class="display-4">404 - No encontrado</h1>
-    <p class="lead" th:text="${mensaje}">El recurso solicitado no se ha encontrado.</p>
-    <a th:href="@{/}" class="btn btn-primary mt-3">Volver al inicio</a>
+<div class="container main-content text-center">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="display-1 text-muted mb-4">404</div>
+            <h1 class="display-5 mb-3">Página no encontrada</h1>
+            <p class="lead text-muted mb-4" th:text="${mensaje}">El recurso solicitado no se ha encontrado.</p>
+            <a th:href="@{/}" class="btn btn-primary btn-lg px-4">Volver al inicio</a>
+        </div>
+    </div>
 </div>
+
+<footer class="footer mt-auto py-3 bg-light border-top">
+    <div class="container text-center text-muted small">
+        &copy; 2025 - Gestor de Preguntas
+    </div>
+</footer>
 
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>
