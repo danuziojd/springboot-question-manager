@@ -21,6 +21,18 @@ public class PreguntaService {
         return preguntaRepository.findAll(pageable);
     }
 
+    public Page<Pregunta> listarPorTematica(Long tematicaId, Pageable pageable) {
+        return preguntaRepository.findByTematicaId(tematicaId, pageable);
+    }
+
+    public Page<Pregunta> listarPorTipo(Class<? extends Pregunta> tipo, Pageable pageable) {
+        return preguntaRepository.findByTipo(tipo, pageable);
+    }
+
+    public Page<Pregunta> listarPorTematicaYTipo(Long tematicaId, Class<? extends Pregunta> tipo, Pageable pageable) {
+        return preguntaRepository.findByTematicaIdAndTipo(tematicaId, tipo, pageable);
+    }
+
     public Pregunta obtenerPorId(Long id) {
         return preguntaRepository.findById(id)
             .orElseThrow(() -> new PreguntaNoEncontradaException("Pregunta no encontrada: " + id));

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.unaempresa.ejercicioavaluacionfinal.entity.Pregunta;
+import com.unaempresa.ejercicioavaluacionfinal.entity.PreguntaSeleccionMultiple;
+import com.unaempresa.ejercicioavaluacionfinal.entity.PreguntaSeleccionUnica;
+import com.unaempresa.ejercicioavaluacionfinal.entity.PreguntaVerdadeiroFalso;
 import com.unaempresa.ejercicioavaluacionfinal.service.PreguntaService;
 import com.unaempresa.ejercicioavaluacionfinal.service.TematicaService;
 
@@ -31,22 +35,87 @@ public class PreguntaController {
         this.tematicaService = tematicaService;
     }
 
+    @ModelAttribute
+    public void initPregunta(@RequestParam(required = false) Long id,
+                              @RequestParam(required = false, defaultValue = "VF") String tipo,
+                              Model model) {
+        if (!model.containsAttribute("pregunta")) {
+            Pregunta pregunta;
+            if (id != null) {
+                pregunta = preguntaService.obtenerPorId(id);
+            } else {
+                pregunta = switch (tipo) {
+                    case "VF" -> new PreguntaVerdadeiroFalso();
+                    case "SU" -> new PreguntaSeleccionUnica();
+                    case "SM" -> new PreguntaSeleccionMultiple();
+                    default -> new PreguntaVerdadeiroFalso();
+                };
+            }
+            model.addAttribute("pregunta", pregunta);
+        }
+    }
+
     @GetMapping
     public String listar(@RequestParam(defaultValue = "0") int page,
                          @RequestParam(defaultValue = "5") int size,
+                         @RequestParam(required = false) Long tematicaId,
+                         @RequestParam(required = false) String tipo,
                          Model model) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").ascending());
-        Page<Pregunta> pagina = preguntaService.listarTodas(pageRequest);
+        Page<Pregunta> pagina;
+
+        Class<? extends Pregunta> tipoClass = null;
+        if (tipo != null && !tipo.isEmpty()) {
+            tipoClass = switch (tipo) {
+                case "VF" -> PreguntaVerdadeiroFalso.class;
+                case "SU" -> PreguntaSeleccionUnica.class;
+                case "SM" -> PreguntaSeleccionMultiple.class;
+                default -> null;
+            };
+        }
+
+        if (tematicaId != null && tipoClass != null) {
+            pagina = preguntaService.listarPorTematicaYTipo(tematicaId, tipoClass, pageRequest);
+        } else if (tematicaId != null) {
+            pagina = preguntaService.listarPorTematica(tematicaId, pageRequest);
+        } else if (tipoClass != null) {
+            pagina = preguntaService.listarPorTipo(tipoClass, pageRequest);
+        } else {
+            pagina = preguntaService.listarTodas(pageRequest);
+        }
+
         model.addAttribute("pagina", pagina);
         model.addAttribute("preguntas", pagina.getContent());
+        model.addAttribute("tematicas", tematicaService.listarTodas());
+        model.addAttribute("tematicaId", tematicaId);
+        model.addAttribute("tipo", tipo);
         return "preguntas/listar";
     }
 
     @GetMapping("/nueva")
-    public String nueva(Model model) {
-        model.addAttribute("pregunta", new Pregunta());
+    public String elegirTipo() {
+        return "preguntas/elegir-tipo";
+    }
+
+    @GetMapping("/nueva/verdadero-falso")
+    public String nuevaVF(Model model) {
+        model.addAttribute("pregunta", new PreguntaVerdadeiroFalso());
         model.addAttribute("tematicas", tematicaService.listarTodas());
-        return "preguntas/formulario";
+        return "preguntas/formulario-vf";
+    }
+
+    @GetMapping("/nueva/seleccion-unica")
+    public String nuevaSU(Model model) {
+        model.addAttribute("pregunta", new PreguntaSeleccionUnica());
+        model.addAttribute("tematicas", tematicaService.listarTodas());
+        return "preguntas/formulario-su";
+    }
+
+    @GetMapping("/nueva/seleccion-multiple")
+    public String nuevaSM(Model model) {
+        model.addAttribute("pregunta", new PreguntaSeleccionMultiple());
+        model.addAttribute("tematicas", tematicaService.listarTodas());
+        return "preguntas/formulario-sm";
     }
 
     @GetMapping("/editar/{id}")
@@ -54,16 +123,30 @@ public class PreguntaController {
         Pregunta pregunta = preguntaService.obtenerPorId(id);
         model.addAttribute("pregunta", pregunta);
         model.addAttribute("tematicas", tematicaService.listarTodas());
+        if (pregunta instanceof PreguntaVerdadeiroFalso) {
+            return "preguntas/formulario-vf";
+        } else if (pregunta instanceof PreguntaSeleccionUnica) {
+            return "preguntas/formulario-su";
+        } else if (pregunta instanceof PreguntaSeleccionMultiple) {
+            return "preguntas/formulario-sm";
+        }
         return "preguntas/formulario";
     }
 
     @PostMapping("/guardar")
-    public String guardar(@Valid Pregunta pregunta,
+    public String guardar(@Valid @ModelAttribute("pregunta") Pregunta pregunta,
                           BindingResult result,
                           RedirectAttributes redirect,
                           Model model) {
         if (result.hasErrors()) {
             model.addAttribute("tematicas", tematicaService.listarTodas());
+            if (pregunta instanceof PreguntaVerdadeiroFalso) {
+                return "preguntas/formulario-vf";
+            } else if (pregunta instanceof PreguntaSeleccionUnica) {
+                return "preguntas/formulario-su";
+            } else if (pregunta instanceof PreguntaSeleccionMultiple) {
+                return "preguntas/formulario-sm";
+            }
             return "preguntas/formulario";
         }
         preguntaService.guardar(pregunta);

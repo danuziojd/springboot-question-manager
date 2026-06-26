@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -13,7 +15,8 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "preguntas")
-public class Pregunta {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Pregunta {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,35 +42,15 @@ public class Pregunta {
 		this.tematica = tematica;
 	}
 
-	public Long getId() {
-		return id;
-	}
+	public Long getId() {return id;}
+	public void setId(Long id) {this.id = id;}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+	public String getEnunciado() {return enunciado;}
+	public void setEnunciado(String enunciado) {this.enunciado = enunciado;}
 
-	public String getEnunciado() {
-		return enunciado;
-	}
+	public Integer getDificultad() {return dificultad;}
+	public void setDificultad(Integer dificultad) {this.dificultad = dificultad;}
 
-	public void setEnunciado(String enunciado) {
-		this.enunciado = enunciado;
-	}
-
-	public Integer getDificultad() {
-		return dificultad;
-	}
-
-	public void setDificultad(Integer dificultad) {
-		this.dificultad = dificultad;
-	}
-
-	public Tematica getTematica() {
-		return tematica;
-	}
-
-	public void setTematica(Tematica tematica) {
-		this.tematica = tematica;
-	}
+	public Tematica getTematica() {return tematica;}
+	public void setTematica(Tematica tematica) {this.tematica = tematica;}
 }

@@ -16,15 +16,34 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
-    <a th:href="@{/preguntas/nueva}" class="btn btn-primary mb-3">+ Nueva Pregunta</a>
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <a th:href="@{/preguntas/nueva}" class="btn btn-primary">+ Nueva Pregunta</a>
+
+        <form method="get" class="d-flex gap-2 align-items-center">
+            <select name="tematicaId" class="form-select w-auto">
+                <option value="">Todas las temáticas</option>
+                <option th:each="t : ${tematicas}" th:value="${t.id}" th:text="${t.nombre}"
+                        th:selected="${tematicaId != null && tematicaId == t.id}"></option>
+            </select>
+            <select name="tipo" class="form-select w-auto">
+                <option value="">Todos los tipos</option>
+                <option value="VF" th:selected="${tipo == 'VF'}">Verdadero/Falso</option>
+                <option value="SU" th:selected="${tipo == 'SU'}">Selección Única</option>
+                <option value="SM" th:selected="${tipo == 'SM'}">Selección Múltiple</option>
+            </select>
+            <button type="submit" class="btn btn-secondary">Filtrar</button>
+            <a th:href="@{/preguntas}" class="btn btn-outline-secondary">Limpiar</a>
+        </form>
+    </div>
 
     <table class="table table-striped table-hover">
         <thead class="table-dark">
             <tr>
                 <th>ID</th>
                 <th>Enunciado</th>
+                <th>Tipo</th>
                 <th>Dificultad</th>
-                <th>Tematica</th>
+                <th>Temática</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -32,12 +51,13 @@
             <tr th:each="pregunta : ${preguntas}">
                 <td th:text="${pregunta.id}"></td>
                 <td th:text="${pregunta.enunciado}"></td>
+                <td th:text="${pregunta.getClass().simpleName}"></td>
                 <td th:text="${pregunta.dificultad}"></td>
                 <td th:text="${pregunta.tematica.nombre}"></td>
                 <td>
                     <a th:href="@{/preguntas/editar/{id}(id=${pregunta.id})}" class="btn btn-sm btn-warning">Editar</a>
                     <a th:href="@{/preguntas/eliminar/{id}(id=${pregunta.id})}" class="btn btn-sm btn-danger"
-                       onclick="return confirm('?Seguro que deseas eliminar esta pregunta?')">Eliminar</a>
+                       onclick="return confirm('¿Seguro que deseas eliminar esta pregunta?')">Eliminar</a>
                 </td>
             </tr>
         </tbody>
@@ -46,20 +66,20 @@
     <nav th:if="${pagina.totalPages > 1}">
         <ul class="pagination">
             <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
-                <a class="page-link" th:href="@{/preguntas(page=0)}">&laquo;</a>
+                <a class="page-link" th:href="@{/preguntas(page=0, tematicaId=${tematicaId}, tipo=${tipo})}">&laquo;</a>
             </li>
             <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
-                <a class="page-link" th:href="@{/preguntas(page=${pagina.number - 1})}">&lsaquo;</a>
+                <a class="page-link" th:href="@{/preguntas(page=${pagina.number - 1}, tematicaId=${tematicaId}, tipo=${tipo})}">&lsaquo;</a>
             </li>
             <li class="page-item" th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}"
                 th:classappend="${i == pagina.number} ? 'active'">
-                <a class="page-link" th:href="@{/preguntas(page=${i})}" th:text="${i + 1}"></a>
+                <a class="page-link" th:href="@{/preguntas(page=${i}, tematicaId=${tematicaId}, tipo=${tipo})}" th:text="${i + 1}"></a>
             </li>
             <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
-                <a class="page-link" th:href="@{/preguntas(page=${pagina.number + 1})}">&rsaquo;</a>
+                <a class="page-link" th:href="@{/preguntas(page=${pagina.number + 1}, tematicaId=${tematicaId}, tipo=${tipo})}">&rsaquo;</a>
             </li>
             <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
-                <a class="page-link" th:href="@{/preguntas(page=${pagina.totalPages - 1})}">&raquo;</a>
+                <a class="page-link" th:href="@{/preguntas(page=${pagina.totalPages - 1}, tematicaId=${tematicaId}, tipo=${tipo})}">&raquo;</a>
             </li>
         </ul>
     </nav>
