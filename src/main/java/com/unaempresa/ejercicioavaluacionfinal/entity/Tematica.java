@@ -12,15 +12,15 @@ import jakarta.validation.constraints.NotBlank;
 @Entity
 @Table(name = "tematicas")
 public class Tematica {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotBlank(message = "El nombre es obligatorio")
 	@Column(nullable = false, unique = true)
 	private String nombre;
-	
+
 	public Tematica() {}
 
 	public Tematica(String nombre) {

@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 public class PreguntaSeleccionUnica extends Pregunta {
 	private String opciones;
 	private String respuestaCorrecta;
-	
+
 	public PreguntaSeleccionUnica() {}
 
 	public PreguntaSeleccionUnica(String enunciado, Integer dificultad, Tematica tematica, String opciones, String respuestaCorrecta) {

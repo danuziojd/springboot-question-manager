@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unaempresa.ejercicioavaluacionfinal.entity.Pregunta;
+import com.unaempresa.ejercicioavaluacionfinal.entity.PreguntaSeleccionMultiple;
+import com.unaempresa.ejercicioavaluacionfinal.entity.PreguntaSeleccionUnica;
+import com.unaempresa.ejercicioavaluacionfinal.entity.PreguntaVerdadeiroFalso;
 import com.unaempresa.ejercicioavaluacionfinal.exception.PreguntaNoEncontradaException;
 import com.unaempresa.ejercicioavaluacionfinal.repository.PreguntaRepository;
 
@@ -41,6 +44,26 @@ public class PreguntaService {
     @Transactional
     public Pregunta guardar(Pregunta pregunta) {
         return preguntaRepository.save(pregunta);
+    }
+
+    @Transactional
+    public Pregunta actualizar(Long id, Pregunta datos) {
+        Pregunta existente = obtenerPorId(id);
+        existente.setEnunciado(datos.getEnunciado());
+        existente.setDificultad(datos.getDificultad());
+        existente.setTematica(datos.getTematica());
+
+        if (existente instanceof PreguntaVerdadeiroFalso vf && datos instanceof PreguntaVerdadeiroFalso vfDatos) {
+            vf.setRespuestaCorrecta(vfDatos.getRespuestaCorrecta());
+        } else if (existente instanceof PreguntaSeleccionUnica su && datos instanceof PreguntaSeleccionUnica suDatos) {
+            su.setOpciones(suDatos.getOpciones());
+            su.setRespuestaCorrecta(suDatos.getRespuestaCorrecta());
+        } else if (existente instanceof PreguntaSeleccionMultiple sm && datos instanceof PreguntaSeleccionMultiple smDatos) {
+            sm.setOpciones(smDatos.getOpciones());
+            sm.setRespuestasCorrectas(smDatos.getRespuestasCorrectas());
+        }
+
+        return preguntaRepository.save(existente);
     }
 
     @Transactional
