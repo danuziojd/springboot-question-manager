@@ -36,6 +36,7 @@ public class TematicaController {
         Page<Tematica> pagina = tematicaService.listarPaginadas(pageRequest);
         model.addAttribute("pagina", pagina);
         model.addAttribute("tematicas", pagina.getContent());
+        model.addAttribute("size", size);
         return "tematicas/listar";
     }
 

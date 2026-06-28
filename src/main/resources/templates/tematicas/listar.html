@@ -52,20 +52,20 @@
     <nav th:if="${pagina.totalPages > 1}" class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
-                <a class="page-link" th:href="@{/tematicas(page=0)}">&laquo;</a>
+                <a class="page-link" th:href="@{/tematicas(page=0, size=${size})}">&laquo;</a>
             </li>
             <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
-                <a class="page-link" th:href="@{/tematicas(page=${pagina.number - 1})}">&lsaquo;</a>
+                <a class="page-link" th:href="@{/tematicas(page=${pagina.number - 1}, size=${size})}">&lsaquo;</a>
             </li>
             <li class="page-item" th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}"
                 th:classappend="${i == pagina.number} ? 'active'">
-                <a class="page-link" th:href="@{/tematicas(page=${i})}" th:text="${i + 1}"></a>
+                <a class="page-link" th:href="@{/tematicas(page=${i}, size=${size})}" th:text="${i + 1}"></a>
             </li>
             <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
-                <a class="page-link" th:href="@{/tematicas(page=${pagina.number + 1})}">&rsaquo;</a>
+                <a class="page-link" th:href="@{/tematicas(page=${pagina.number + 1}, size=${size})}">&rsaquo;</a>
             </li>
             <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
-                <a class="page-link" th:href="@{/tematicas(page=${pagina.totalPages - 1})}">&raquo;</a>
+                <a class="page-link" th:href="@{/tematicas(page=${pagina.totalPages - 1}, size=${size})}">&raquo;</a>
             </li>
         </ul>
     </nav>

@@ -48,14 +48,24 @@ public class SecurityConfig {
 		http
 			.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/h2-console/**"))
 			.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
-			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/api/auth/**").permitAll()
 				.requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
 				.requestMatchers("/", "/preguntas/**", "/tematicas/**").permitAll()
 				.requestMatchers("/css/**", "/js/**", "/h2-console/**").permitAll()
+				.requestMatchers("/login", "/logout").permitAll()
+				.requestMatchers("/admin/**").hasRole("ADMIN")
 				.requestMatchers("/api/**").authenticated()
-				.anyRequest().permitAll()
+				.anyRequest().authenticated()
+			)
+			.formLogin(form -> form
+				.loginPage("/login")
+				.defaultSuccessUrl("/admin")
+				.permitAll()
+			)
+			.logout(logout -> logout
+				.logoutSuccessUrl("/login?logout")
+				.permitAll()
 			)
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

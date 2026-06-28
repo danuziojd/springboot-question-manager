@@ -104,20 +104,20 @@
     <nav th:if="${pagina.totalPages > 1}" class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
-                <a class="page-link" th:href="@{/preguntas(page=0, tematicaId=${tematicaId}, tipo=${tipo})}">&laquo;</a>
+                <a class="page-link" th:href="@{/preguntas(page=0, size=${size}, tematicaId=${tematicaId}, tipo=${tipo})}">&laquo;</a>
             </li>
             <li class="page-item" th:classappend="${pagina.first} ? 'disabled'">
-                <a class="page-link" th:href="@{/preguntas(page=${pagina.number - 1}, tematicaId=${tematicaId}, tipo=${tipo})}">&lsaquo;</a>
+                <a class="page-link" th:href="@{/preguntas(page=${pagina.number - 1}, size=${size}, tematicaId=${tematicaId}, tipo=${tipo})}">&lsaquo;</a>
             </li>
             <li class="page-item" th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}"
                 th:classappend="${i == pagina.number} ? 'active'">
-                <a class="page-link" th:href="@{/preguntas(page=${i}, tematicaId=${tematicaId}, tipo=${tipo})}" th:text="${i + 1}"></a>
+                <a class="page-link" th:href="@{/preguntas(page=${i}, size=${size}, tematicaId=${tematicaId}, tipo=${tipo})}" th:text="${i + 1}"></a>
             </li>
             <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
-                <a class="page-link" th:href="@{/preguntas(page=${pagina.number + 1}, tematicaId=${tematicaId}, tipo=${tipo})}">&rsaquo;</a>
+                <a class="page-link" th:href="@{/preguntas(page=${pagina.number + 1}, size=${size}, tematicaId=${tematicaId}, tipo=${tipo})}">&rsaquo;</a>
             </li>
             <li class="page-item" th:classappend="${pagina.last} ? 'disabled'">
-                <a class="page-link" th:href="@{/preguntas(page=${pagina.totalPages - 1}, tematicaId=${tematicaId}, tipo=${tipo})}">&raquo;</a>
+                <a class="page-link" th:href="@{/preguntas(page=${pagina.totalPages - 1}, size=${size}, tematicaId=${tematicaId}, tipo=${tipo})}">&raquo;</a>
             </li>
         </ul>
     </nav>

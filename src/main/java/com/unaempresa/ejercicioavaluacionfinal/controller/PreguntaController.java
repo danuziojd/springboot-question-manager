@@ -89,6 +89,7 @@ public class PreguntaController {
         model.addAttribute("tematicas", tematicaService.listarTodas());
         model.addAttribute("tematicaId", tematicaId);
         model.addAttribute("tipo", tipo);
+        model.addAttribute("size", size);
         return "preguntas/listar";
     }
 
