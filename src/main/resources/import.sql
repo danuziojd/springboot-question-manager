@@ -1,3 +1,6 @@
+-- Usuario de prueba (username: admin, password: admin123)
+INSERT INTO usuarios (id, username, password, role) VALUES (1, 'admin', '$2b$10$7XrFriPKdlrKFUqgos7Qe.x8sf8mh3gn1ZB.NAkQLgEONkAzxvpRK', 'ADMIN');
+
 -- Tematicas
 INSERT INTO tematicas (id, nombre) VALUES (1, 'Matematicas');
 INSERT INTO tematicas (id, nombre) VALUES (2, 'Historia');

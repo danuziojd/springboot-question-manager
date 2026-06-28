@@ -2,13 +2,15 @@ package com.unaempresa.ejercicioavaluacionfinal.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.unaempresa.ejercicioavaluacionfinal.controller.AuthController;
 import com.unaempresa.ejercicioavaluacionfinal.controller.PreguntaRestController;
 import com.unaempresa.ejercicioavaluacionfinal.dto.ErrorResponseDTO;
 
-@RestControllerAdvice(assignableTypes = PreguntaRestController.class)
+@RestControllerAdvice(assignableTypes = { PreguntaRestController.class, AuthController.class })
 public class RestExceptionHandler {
 
 	@ExceptionHandler(PreguntaNoEncontradaException.class)
@@ -21,6 +23,12 @@ public class RestExceptionHandler {
 	public ResponseEntity<ErrorResponseDTO> manejarTematicaNoEncontrada(TematicaNoEncontradaException ex) {
 		ErrorResponseDTO body = new ErrorResponseDTO(ex.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+	}
+
+	@ExceptionHandler(AuthenticationException.class)
+	public ResponseEntity<ErrorResponseDTO> manejarAutenticacionInvalida(AuthenticationException ex) {
+		ErrorResponseDTO body = new ErrorResponseDTO("Usuario o contraseña incorrectos.");
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
