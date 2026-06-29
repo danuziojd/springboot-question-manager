@@ -1,12 +1,16 @@
 package com.unaempresa.ejercicioavaluacionfinal.controller;
 
+import java.beans.PropertyEditorSupport;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +22,7 @@ import com.unaempresa.ejercicioavaluacionfinal.entity.Pregunta;
 import com.unaempresa.ejercicioavaluacionfinal.entity.PreguntaSeleccionMultiple;
 import com.unaempresa.ejercicioavaluacionfinal.entity.PreguntaSeleccionUnica;
 import com.unaempresa.ejercicioavaluacionfinal.entity.PreguntaVerdadeiroFalso;
+import com.unaempresa.ejercicioavaluacionfinal.entity.Tematica;
 import com.unaempresa.ejercicioavaluacionfinal.service.PreguntaService;
 import com.unaempresa.ejercicioavaluacionfinal.service.TematicaService;
 
@@ -33,6 +38,20 @@ public class PreguntaController {
     public PreguntaController(PreguntaService preguntaService, TematicaService tematicaService) {
         this.preguntaService = preguntaService;
         this.tematicaService = tematicaService;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Tematica.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String text) {
+                if (text != null && !text.isEmpty()) {
+                    setValue(tematicaService.obtenerPorId(Long.parseLong(text)));
+                } else {
+                    setValue(null);
+                }
+            }
+        });
     }
 
     @ModelAttribute

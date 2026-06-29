@@ -33,7 +33,7 @@ public class PreguntaMapper {
 		if (p instanceof PreguntaSeleccionMultiple sm) {
 			PreguntaSmDTO dto = new PreguntaSmDTO();
 			dto.setOpciones(sm.getOpciones());
-			dto.setRespuestaCorrecta(sm.getRespuestasCorrectas());
+			dto.setRespuestasCorrectas(sm.getRespuestasCorrectas());
 			dto.setTipo("SM");
 			fillBaseFields(dto, p);
 			return dto;

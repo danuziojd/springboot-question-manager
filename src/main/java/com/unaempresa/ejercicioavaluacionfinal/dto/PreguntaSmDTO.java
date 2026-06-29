@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class PreguntaSmDTO extends PreguntaDTO {
 	private String opciones;
-	private String respuestaCorrecta;
+	private String respuestasCorrectas;
 }

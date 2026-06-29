@@ -1,6 +1,6 @@
 # --- ETAPA 1: build ---
 # Usamos una imagen con el JDK completo (necesario para compilar) y Maven preinstalado.
-FROM maven:3.9-eclipse-temurin-25 AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 
 WORKDIR /build
 
@@ -15,7 +15,7 @@ RUN mvn clean package -DskipTests
 
 # --- ETAPA 2: ejecucion ---
 # Usamos una imagen mas liviana, con solo el JRE (no necesitamos el JDK para ejecutar).
-FROM eclipse-temurin:25-jre-jammy
+FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
