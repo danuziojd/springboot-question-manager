@@ -1,9 +1,13 @@
 package com.unaempresa.ejercicioavaluacionfinal.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -17,6 +21,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -42,13 +47,23 @@ class PreguntaRestControllerTest {
 	@MockitoBean
 	private TematicaService tematicaService;
 
-	@Test
-	void listar_deberiaDevolver200YLaListaDePreguntas() throws Exception {
+	private Tematica criarTematica() {
 		Tematica tematica = new Tematica("Matematicas");
 		tematica.setId(1L);
+		return tematica;
+	}
 
+	private PreguntaVerdadeiroFalso criarPreguntaVF() {
+		Tematica tematica = criarTematica();
 		PreguntaVerdadeiroFalso pregunta = new PreguntaVerdadeiroFalso("¿2+2=4?", 1, tematica, true);
 		pregunta.setId(10L);
+		return pregunta;
+	}
+
+	@Test
+	void listar_deberiaDevolver200YLaListaDePreguntas() throws Exception {
+		Tematica tematica = criarTematica();
+		PreguntaVerdadeiroFalso pregunta = criarPreguntaVF();
 
 		var pagina = new PageImpl<Pregunta>(List.of(pregunta), PageRequest.of(0, 5), 1);
 
@@ -63,18 +78,15 @@ class PreguntaRestControllerTest {
 
 	@Test
 	void obtener_deberiaDevolver200_cuandoLaPreguntaExiste() throws Exception {
-		Tematica tematica = new Tematica("Matematicas");
-		tematica.setId(1L);
-
-		PreguntaVerdadeiroFalso pregunta = new PreguntaVerdadeiroFalso("¿2+2=4?", 1, tematica, true);
-		pregunta.setId(10L);
+		PreguntaVerdadeiroFalso pregunta = criarPreguntaVF();
 
 		when(preguntaService.obtenerPorId(10L)).thenReturn(pregunta);
 
 		mockMvc.perform(get("/api/preguntas/10"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id").value(10))
-				.andExpect(jsonPath("$.enunciado").value("¿2+2=4?"));
+				.andExpect(jsonPath("$.enunciado").value("¿2+2=4?"))
+				.andExpect(jsonPath("$.tipo").value("VF"));
 	}
 
 	@Test
@@ -88,8 +100,63 @@ class PreguntaRestControllerTest {
 	}
 
 	@Test
+	void crear_deberiaDevolver201_cuandoLosDatosSonValidos() throws Exception {
+		Tematica tematica = criarTematica();
+		PreguntaVerdadeiroFalso pregunta = criarPreguntaVF();
+
+		when(tematicaService.obtenerPorId(1L)).thenReturn(tematica);
+		when(preguntaService.guardar(any())).thenReturn(pregunta);
+
+		String json = """
+				{
+					"enunciado": "¿2+2=4?",
+					"dificultad": 1,
+					"tematicaId": 1,
+					"tipo": "VF",
+					"respuestaCorrectaVf": true
+				}
+				""";
+
+		mockMvc.perform(post("/api/preguntas")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.id").value(10))
+				.andExpect(jsonPath("$.tipo").value("VF"));
+	}
+
+	@Test
+	void actualizar_deberiaDevolver200_cuandoLosDatosSonValidos() throws Exception {
+		Tematica tematica = criarTematica();
+		PreguntaVerdadeiroFalso preguntaActualizada = new PreguntaVerdadeiroFalso("Pregunta editada", 2, tematica, false);
+		preguntaActualizada.setId(10L);
+
+		when(tematicaService.obtenerPorId(1L)).thenReturn(tematica);
+		when(preguntaService.actualizar(eq(10L), any())).thenReturn(preguntaActualizada);
+
+		String json = """
+				{
+					"enunciado": "Pregunta editada",
+					"dificultad": 2,
+					"tematicaId": 1,
+					"tipo": "VF",
+					"respuestaCorrectaVf": false
+				}
+				""";
+
+		mockMvc.perform(put("/api/preguntas/10")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.enunciado").value("Pregunta editada"))
+				.andExpect(jsonPath("$.dificultad").value(2));
+	}
+
+	@Test
 	void eliminar_deberiaDevolver204_cuandoSeEliminaCorrectamente() throws Exception {
 		mockMvc.perform(delete("/api/preguntas/10"))
 				.andExpect(status().isNoContent());
+
+		verify(preguntaService).eliminar(10L);
 	}
 }

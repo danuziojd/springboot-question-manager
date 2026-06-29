@@ -59,7 +59,7 @@ public class PreguntaMapper {
 			case "SM" -> {
 				PreguntaSeleccionMultiple sm = new PreguntaSeleccionMultiple();
 				sm.setOpciones(dto.getOpciones());
-				sm.setRespuestasCorrectas(dto.getRespuestaCorrecta());
+				sm.setRespuestasCorrectas(dto.getRespuestasCorrectas());
 				fillBaseEntityFields(sm, dto, tematica);
 				yield sm;
 			}

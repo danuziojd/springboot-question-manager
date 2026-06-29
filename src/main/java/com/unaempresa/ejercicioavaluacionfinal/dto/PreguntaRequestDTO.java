@@ -29,5 +29,6 @@ public class PreguntaRequestDTO {
 
     private String opciones;
     private String respuestaCorrecta;
+    private String respuestasCorrectas;
     private Boolean respuestaCorrectaVf;
 }
