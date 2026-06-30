@@ -76,6 +76,7 @@ Sistema completo para la creación, edición y gestión de preguntas tipo test �
 
 ```bash
 ./mvnw spring-boot:run
+```
 
 La aplicación inicia en:
 http://localhost:8080
