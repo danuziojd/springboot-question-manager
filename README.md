@@ -84,7 +84,9 @@ Consola H2: /h2-console
 Usuario por defecto: admin / admin123
 
 🔹 Perfil Prod (MySQL + Docker)
+```bash
 docker compose up --build
+```
 
 🔧 Perfiles Disponibles
   | Perfil | Base de Datos | Cómo Activar |
@@ -93,7 +95,9 @@ docker compose up --build
   | prod | MySQL | ``SPRING_PROFILES_ACTIVE=prod ``./mvnw ``spring-boot:run`` |
 
 🧪 Ejecutar Tests
+```bash
   ./mvnw test
+```
 
 Incluye:
   - Tests unitarios (Mockito)
@@ -119,13 +123,16 @@ Incluye:
 
 
 🔌 API REST
+
   🔐 Autenticación
+  ```http
   POST /api/auth/login
   Content-Type: application/json
   {
     "username": "admin",
     "password": "admin123"
   }
+  ```
 
 📚 Endpoints
   | Método | Ruta | Descripción |
