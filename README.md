@@ -206,4 +206,5 @@ This project helped reinforce:
 - CI/CD with GitHub Actions
 
 📝 License
+
 This project was developed as a final evaluation exercise.
